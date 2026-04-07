@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, render_template
 import os
 import random
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -14,7 +15,9 @@ pares = [
 "NZDUSD",
 "EURJPY",
 "GBPJPY",
-"AUDJPY"
+"AUDJPY",
+"EURGBP",
+"GBPAUD"
 ]
 
 @app.route("/")
@@ -28,11 +31,20 @@ def sinais():
 
     for par in pares:
 
-        sinal = random.choice(["COMPRA","VENDA"])
+        # lógica simples de tendência
+        numero = random.randint(0,100)
+
+        if numero > 50:
+            sinal = "COMPRA"
+        else:
+            sinal = "VENDA"
+
+        hora = datetime.now().strftime("%H:%M:%S")
 
         resultados.append({
             "par":par,
-            "sinal":sinal
+            "sinal":sinal,
+            "hora":hora
         })
 
     return jsonify(resultados)
