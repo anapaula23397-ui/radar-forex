@@ -19,7 +19,7 @@ text-align:center;
 table{
 margin:auto;
 border-collapse:collapse;
-width:60%;
+width:70%;
 }
 
 th,td{
@@ -50,6 +50,7 @@ font-weight:bold;
 <tr>
 <th>PAR</th>
 <th>SINAL</th>
+<th>HORA</th>
 </tr>
 
 </table>
@@ -63,7 +64,8 @@ let dados = await resposta.json()
 
 let tabela = document.getElementById("tabela")
 
-tabela.innerHTML = "<tr><th>PAR</th><th>SINAL</th></tr>"
+tabela.innerHTML =
+"<tr><th>PAR</th><th>SINAL</th><th>HORA</th></tr>"
 
 dados.forEach(d => {
 
@@ -73,6 +75,7 @@ tabela.innerHTML += `
 <tr>
 <td>${d.par}</td>
 <td class="${classe}">${d.sinal}</td>
+<td>${d.hora}</td>
 </tr>
 `
 
