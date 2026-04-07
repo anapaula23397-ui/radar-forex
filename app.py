@@ -17,7 +17,10 @@ pares = [
 "GBPJPY",
 "AUDJPY",
 "EURGBP",
-"GBPAUD"
+"GBPAUD",
+"EURAUD",
+"GBPCAD",
+"AUDCAD"
 ]
 
 @app.route("/")
@@ -31,13 +34,14 @@ def sinais():
 
     for par in pares:
 
-        # lógica simples de tendência
         numero = random.randint(0,100)
 
-        if numero > 50:
+        if numero > 55:
             sinal = "COMPRA"
-        else:
+        elif numero < 45:
             sinal = "VENDA"
+        else:
+            sinal = "AGUARDAR"
 
         hora = datetime.now().strftime("%H:%M:%S")
 
