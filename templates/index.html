@@ -1,22 +1,25 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+
 <meta charset="UTF-8">
+
 <title>Radar Forex</title>
 
 <style>
 
 body{
-font-family:Arial;
-background:#101010;
+background:#111;
 color:white;
+font-family:Arial;
 text-align:center;
 }
 
 table{
 margin:auto;
 border-collapse:collapse;
-width:50%;
+width:60%;
 }
 
 th,td{
@@ -43,10 +46,12 @@ font-weight:bold;
 <h1>Radar Forex</h1>
 
 <table id="tabela">
+
 <tr>
 <th>PAR</th>
 <th>SINAL</th>
 </tr>
+
 </table>
 
 <script>
@@ -62,7 +67,7 @@ tabela.innerHTML = "<tr><th>PAR</th><th>SINAL</th></tr>"
 
 dados.forEach(d => {
 
-let classe = d.sinal == "COMPRA" ? "compra" : "venda"
+let classe = d.sinal == "COMPRA" ? "compra":"venda"
 
 tabela.innerHTML += `
 <tr>
@@ -75,11 +80,12 @@ tabela.innerHTML += `
 
 }
 
-setInterval(atualizar,10000)
+setInterval(atualizar,5000)
 
 atualizar()
 
 </script>
 
 </body>
+
 </html>
