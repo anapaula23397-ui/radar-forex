@@ -1,4 +1,5 @@
 flask
 yfinance
-ta
 pandas
+ta
+gunicorn
