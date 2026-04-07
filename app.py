@@ -1,31 +1,23 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify
 import yfinance as yf
-from ta.trend import EMAIndicator
-from ta.momentum import RSIIndicator
+import pandas as pd
+import os
 
 app = Flask(__name__)
 
 pares = [
-
-"EURUSD=X","GBPUSD=X","AUDUSD=X","NZDUSD=X","USDCAD=X","USDCHF=X","USDJPY=X",
-
-"EURGBP=X","EURAUD=X","EURNZD=X","EURCAD=X","EURCHF=X","EURJPY=X",
-
-"GBPAUD=X","GBPNZD=X","GBPCAD=X","GBPCHF=X","GBPJPY=X",
-
-"AUDNZD=X","AUDCAD=X","AUDCHF=X","AUDJPY=X",
-
-"NZDCAD=X","NZDCHF=X","NZDJPY=X",
-
-"CADCHF=X","CADJPY=X",
-
-"CHFJPY=X"
-
+"EURUSD=X",
+"GBPUSD=X",
+"AUDUSD=X",
+"USDJPY=X",
+"USDCAD=X",
+"USDCHF=X",
+"NZDUSD=X"
 ]
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return "Radar Forex Online"
 
 @app.route("/sinais")
 def sinais():
@@ -40,36 +32,20 @@ def sinais():
 
             close = data["Close"]
 
-            ema9 = EMAIndicator(close,9).ema_indicator()
-            ema21 = EMAIndicator(close,21).ema_indicator()
+            ema9 = close.ewm(span=9).mean()
+            ema21 = close.ewm(span=21).mean()
 
-            rsi = RSIIndicator(close,14).rsi()
+            if ema9.iloc[-1] > ema21.iloc[-1]:
+                resultados.append({"par": par, "sinal": "COMPRA"})
 
-            preco = close.iloc[-1]
-
-# COMPRA
-if ema9.iloc[-1] > ema21.iloc[-1] and rsi.iloc[-1] > 50:
-    resultados.append({"par":par,"sinal":"COMPRA"})
-
-# VENDA
-elif ema9.iloc[-1] < ema21.iloc[-1] and rsi.iloc[-1] < 50:
-    resultados.append({"par":par,"sinal":"VENDA"})
-
-# TOQUE NA MÉDIA (gera mais sinais)
-elif preco > ema9.iloc[-1]:
-    resultados.append({"par":par,"sinal":"COMPRA"})
-
-elif preco < ema9.iloc[-1]:
-    resultados.append({"par":par,"sinal":"VENDA"})
+            elif ema9.iloc[-1] < ema21.iloc[-1]:
+                resultados.append({"par": par, "sinal": "VENDA"})
 
         except:
             pass
 
     return jsonify(resultados)
 
-import os
-
-import os
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 3000))
