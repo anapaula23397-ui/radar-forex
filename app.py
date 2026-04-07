@@ -9,10 +9,13 @@ pares = [
 "EURUSD=X",
 "GBPUSD=X",
 "AUDUSD=X",
+"NZDUSD=X",
 "USDJPY=X",
 "USDCAD=X",
 "USDCHF=X",
-"NZDUSD=X"
+"EURJPY=X",
+"GBPJPY=X",
+"AUDJPY=X"
 ]
 
 @app.route("/")
@@ -36,16 +39,20 @@ def sinais():
             ema21 = close.ewm(span=21).mean()
 
             if ema9.iloc[-1] > ema21.iloc[-1]:
-                resultados.append({"par": par, "sinal": "COMPRA"})
-
-            elif ema9.iloc[-1] < ema21.iloc[-1]:
-                resultados.append({"par": par, "sinal": "VENDA"})
+                sinal = "COMPRA"
+            else:
+                sinal = "VENDA"
 
         except:
-            pass
+            sinal = "SEM DADOS"
+
+        resultados.append({
+            "par": par,
+            "sinal": sinal
+        })
 
     return jsonify(resultados)
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 3000))
+    port = int(os.environ.get("PORT",3000))
     app.run(host="0.0.0.0", port=port)
