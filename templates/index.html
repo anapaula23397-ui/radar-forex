@@ -1,26 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-
+<meta charset="UTF-8">
 <title>Radar Forex</title>
 
 <style>
 
 body{
-background:#111;
-color:white;
 font-family:Arial;
+background:#101010;
+color:white;
 text-align:center;
 }
 
 table{
 margin:auto;
-width:60%;
 border-collapse:collapse;
+width:50%;
 }
 
-td,th{
-border:1px solid #333;
+th,td{
+border:1px solid #444;
 padding:10px;
 }
 
@@ -53,21 +53,21 @@ font-weight:bold;
 
 async function atualizar(){
 
-let r = await fetch("/sinais")
-let dados = await r.json()
+let resposta = await fetch("/sinais")
+let dados = await resposta.json()
 
 let tabela = document.getElementById("tabela")
 
-tabela.innerHTML="<tr><th>PAR</th><th>SINAL</th></tr>"
+tabela.innerHTML = "<tr><th>PAR</th><th>SINAL</th></tr>"
 
-dados.forEach(d=>{
+dados.forEach(d => {
 
-let cor=d.sinal=="COMPRA"?"compra":"venda"
+let classe = d.sinal == "COMPRA" ? "compra" : "venda"
 
-tabela.innerHTML+=`
+tabela.innerHTML += `
 <tr>
 <td>${d.par}</td>
-<td class="${cor}">${d.sinal}</td>
+<td class="${classe}">${d.sinal}</td>
 </tr>
 `
 
