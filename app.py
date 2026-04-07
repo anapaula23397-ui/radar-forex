@@ -45,11 +45,22 @@ def sinais():
 
             rsi = RSIIndicator(close,14).rsi()
 
-            if ema9.iloc[-1] > ema21.iloc[-1] and rsi.iloc[-1] > 55:
-                resultados.append({"par":par,"sinal":"COMPRA"})
+            preco = close.iloc[-1]
 
-            elif ema9.iloc[-1] < ema21.iloc[-1] and rsi.iloc[-1] < 45:
-                resultados.append({"par":par,"sinal":"VENDA"})
+# COMPRA
+if ema9.iloc[-1] > ema21.iloc[-1] and rsi.iloc[-1] > 50:
+    resultados.append({"par":par,"sinal":"COMPRA"})
+
+# VENDA
+elif ema9.iloc[-1] < ema21.iloc[-1] and rsi.iloc[-1] < 50:
+    resultados.append({"par":par,"sinal":"VENDA"})
+
+# TOQUE NA MÉDIA (gera mais sinais)
+elif preco > ema9.iloc[-1]:
+    resultados.append({"par":par,"sinal":"COMPRA"})
+
+elif preco < ema9.iloc[-1]:
+    resultados.append({"par":par,"sinal":"VENDA"})
 
         except:
             pass
