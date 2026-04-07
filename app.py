@@ -5,11 +5,27 @@ from ta.momentum import RSIIndicator
 
 app = Flask(__name__)
 
-pares = ["EURUSD=X","GBPUSD=X","USDJPY=X","AUDUSD=X","USDCAD=X"]
+pares = [
+
+"EURUSD=X","GBPUSD=X","AUDUSD=X","NZDUSD=X","USDCAD=X","USDCHF=X","USDJPY=X",
+
+"EURGBP=X","EURAUD=X","EURNZD=X","EURCAD=X","EURCHF=X","EURJPY=X",
+
+"GBPAUD=X","GBPNZD=X","GBPCAD=X","GBPCHF=X","GBPJPY=X",
+
+"AUDNZD=X","AUDCAD=X","AUDCHF=X","AUDJPY=X",
+
+"NZDCAD=X","NZDCHF=X","NZDJPY=X",
+
+"CADCHF=X","CADJPY=X",
+
+"CHFJPY=X"
+
+]
 
 @app.route("/")
 def home():
-    return "Radar funcionando"
+    return "Radar Forex Online"
 
 @app.route("/sinais")
 def sinais():
@@ -18,20 +34,25 @@ def sinais():
 
     for par in pares:
 
-        data = yf.download(par, interval="1m", period="1d")
+        try:
 
-        close = data["Close"]
+            data = yf.download(par, interval="1m", period="1d")
 
-        ema9 = EMAIndicator(close,9).ema_indicator()
-        ema21 = EMAIndicator(close,21).ema_indicator()
+            close = data["Close"]
 
-        rsi = RSIIndicator(close,14).rsi()
+            ema9 = EMAIndicator(close,9).ema_indicator()
+            ema21 = EMAIndicator(close,21).ema_indicator()
 
-        if ema9.iloc[-1] > ema21.iloc[-1] and rsi.iloc[-1] > 55:
-            resultados.append({"par":par,"sinal":"COMPRA"})
+            rsi = RSIIndicator(close,14).rsi()
 
-        elif ema9.iloc[-1] < ema21.iloc[-1] and rsi.iloc[-1] < 45:
-            resultados.append({"par":par,"sinal":"VENDA"})
+            if ema9.iloc[-1] > ema21.iloc[-1] and rsi.iloc[-1] > 55:
+                resultados.append({"par":par,"sinal":"COMPRA"})
+
+            elif ema9.iloc[-1] < ema21.iloc[-1] and rsi.iloc[-1] < 45:
+                resultados.append({"par":par,"sinal":"VENDA"})
+
+        except:
+            pass
 
     return jsonify(resultados)
 
