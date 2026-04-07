@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 import yfinance as yf
 import pandas as pd
 import os
@@ -17,7 +17,7 @@ pares = [
 
 @app.route("/")
 def home():
-    return "Radar Forex Online"
+    return render_template("index.html")
 
 @app.route("/sinais")
 def sinais():
@@ -45,7 +45,6 @@ def sinais():
             pass
 
     return jsonify(resultados)
-
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 3000))
