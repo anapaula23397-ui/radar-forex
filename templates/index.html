@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Radar Forex</title>
+
+<style>
+
+body{
+background:#111;
+color:white;
+font-family:Arial;
+text-align:center;
+}
+
+table{
+margin:auto;
+width:60%;
+border-collapse:collapse;
+}
+
+td,th{
+border:1px solid #333;
+padding:10px;
+}
+
+.compra{
+color:#00ff88;
+font-weight:bold;
+}
+
+.venda{
+color:#ff4444;
+font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Radar Forex</h1>
+
+<table id="tabela">
+<tr>
+<th>PAR</th>
+<th>SINAL</th>
+</tr>
+</table>
+
+<script>
+
+async function atualizar(){
+
+let r = await fetch("/sinais")
+let dados = await r.json()
+
+let tabela = document.getElementById("tabela")
+
+tabela.innerHTML="<tr><th>PAR</th><th>SINAL</th></tr>"
+
+dados.forEach(d=>{
+
+let cor=d.sinal=="COMPRA"?"compra":"venda"
+
+tabela.innerHTML+=`
+<tr>
+<td>${d.par}</td>
+<td class="${cor}">${d.sinal}</td>
+</tr>
+`
+
+})
+
+}
+
+setInterval(atualizar,10000)
+
+atualizar()
+
+</script>
+
+</body>
+</html>
