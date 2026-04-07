@@ -4,7 +4,6 @@
 <head>
 
 <meta charset="UTF-8">
-
 <title>Radar Forex</title>
 
 <style>
@@ -34,6 +33,11 @@ font-weight:bold;
 
 .venda{
 color:#ff4444;
+font-weight:bold;
+}
+
+.aguardar{
+color:#ffaa00;
 font-weight:bold;
 }
 
@@ -69,7 +73,10 @@ tabela.innerHTML =
 
 dados.forEach(d => {
 
-let classe = d.sinal == "COMPRA" ? "compra":"venda"
+let classe = "aguardar"
+
+if(d.sinal=="COMPRA") classe="compra"
+if(d.sinal=="VENDA") classe="venda"
 
 tabela.innerHTML += `
 <tr>
@@ -83,12 +90,13 @@ tabela.innerHTML += `
 
 }
 
-setInterval(atualizar,5000)
+/* ATUALIZA A CADA 30 SEGUNDOS */
+
+setInterval(atualizar,30000)
 
 atualizar()
 
 </script>
 
 </body>
-
 </html>
