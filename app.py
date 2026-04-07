@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 import yfinance as yf
 from ta.trend import EMAIndicator
 from ta.momentum import RSIIndicator
@@ -25,7 +25,7 @@ pares = [
 
 @app.route("/")
 def home():
-    return "Radar Forex Online"
+    return render_template("index.html")
 
 @app.route("/sinais")
 def sinais():
