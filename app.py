@@ -1,28 +1,58 @@
 from flask import Flask, jsonify, render_template
-import os
 import requests
+import pandas as pd
+from datetime import datetime
+import os
 
 app = Flask(__name__)
 
 pares = [
-"EURUSD","GBPUSD","USDJPY","AUDUSD","USDCAD",
-"USDCHF","NZDUSD","EURJPY","GBPJPY","AUDJPY"
+"EURUSD","GBPUSD","USDJPY","AUDUSD",
+"USDCAD","USDCHF","NZDUSD","EURJPY","GBPJPY","AUDJPY"
 ]
 
-def calcular_sinal(precos):
+def calcular_indicadores(precos):
 
-    if len(precos) < 21:
-        return "AGUARDAR"
+    df = pd.DataFrame(precos, columns=["close"])
 
-    ema9 = sum(precos[-9:]) / 9
-    ema21 = sum(precos[-21:]) / 21
+    df["ema9"] = df["close"].ewm(span=9).mean()
+    df["ema21"] = df["close"].ewm(span=21).mean()
 
-    if ema9 > ema21:
+    delta = df["close"].diff()
+    ganho = (delta.where(delta > 0, 0)).rolling(window=14).mean()
+    perda = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
+
+    rs = ganho / perda
+    df["rsi"] = 100 - (100 / (1 + rs))
+
+    ultima = df.iloc[-1]
+
+    if ultima["ema9"] > ultima["ema21"] and ultima["rsi"] > 55:
         return "COMPRA"
-    elif ema9 < ema21:
+
+    if ultima["ema9"] < ultima["ema21"] and ultima["rsi"] < 45:
         return "VENDA"
-    else:
-        return "AGUARDAR"
+
+    return "AGUARDAR"
+
+
+def pegar_precos(par):
+
+    base = par[:3]
+    quote = par[3:]
+
+    url = f"https://api.frankfurter.app/2024-01-01..2024-12-31?from={base}&to={quote}"
+
+    r = requests.get(url)
+
+    data = r.json()
+
+    precos = []
+
+    for d in data["rates"]:
+        precos.append(data["rates"][d][quote])
+
+    return precos[-100:]
 
 
 @app.route("/")
@@ -39,23 +69,17 @@ def sinais():
 
         try:
 
-            url = f"https://api.exchangerate.host/timeseries?start_date=2024-01-01&end_date=2024-12-31&base={par[:3]}&symbols={par[3:]}"
-            r = requests.get(url)
-            data = r.json()
+            precos = pegar_precos(par)
 
-            precos = []
-
-            for d in data["rates"]:
-                precos.append(data["rates"][d][par[3:]])
-
-            sinal = calcular_sinal(precos)
+            sinal = calcular_indicadores(precos)
 
         except:
             sinal = "ERRO"
 
         resultados.append({
             "par": par,
-            "sinal": sinal
+            "sinal": sinal,
+            "hora": datetime.now().strftime("%H:%M:%S")
         })
 
     return jsonify(resultados)
