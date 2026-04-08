@@ -1,4 +1,67 @@
-async function atualizar() {
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+<title>Radar Forex</title>
+
+<style>
+
+body{
+background:#111;
+color:white;
+font-family:Arial;
+text-align:center;
+}
+
+table{
+margin:auto;
+border-collapse:collapse;
+width:70%;
+}
+
+th,td{
+border:1px solid #444;
+padding:10px;
+}
+
+.compra{
+color:#00ff88;
+font-weight:bold;
+}
+
+.venda{
+color:#ff4444;
+font-weight:bold;
+}
+
+.aguardar{
+color:#ffaa00;
+font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Radar Forex</h1>
+
+<table id="tabela">
+
+<tr>
+<th>PAR</th>
+<th>SINAL</th>
+<th>HORA</th>
+</tr>
+
+</table>
+
+<script>
+
+async function atualizar(){
 
 let resposta = await fetch("/sinais")
 let dados = await resposta.json()
@@ -11,8 +74,8 @@ dados.forEach(d => {
 
 let classe = "aguardar"
 
-if (d.sinal == "COMPRA") classe = "compra"
-if (d.sinal == "VENDA") classe = "venda"
+if(d.sinal=="COMPRA") classe="compra"
+if(d.sinal=="VENDA") classe="venda"
 
 tabela.innerHTML += `
 <tr>
@@ -26,8 +89,12 @@ tabela.innerHTML += `
 
 }
 
-/* ATUALIZA A CADA 60 SEGUNDOS */
-
-setInterval(atualizar, 60000)
+setInterval(atualizar,60000)
 
 atualizar()
+
+</script>
+
+</body>
+
+</html>
